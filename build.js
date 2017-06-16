@@ -6,6 +6,7 @@ const minify = require('html-minifier').minify;
 const purifycss = require('purify-css');
 const log = require('chip')();
 const cssParser = require('css');
+const request = require('sync-request');
 
 function minifyHtml(html) {
     return minify(html, {
@@ -44,15 +45,38 @@ function css(data) {
     });
 }
 
+function imageFromUrlToBase64(url) {
+    const req = request('GET', url, { encoding: null });
+    if (req.statusCode === 200) {
+        return `data:${req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
+    }
+    return '';
+}
 
 glob('configs/*.json', (err0, files) => {
     if (err0) log.error(err0);
     for (let i = files.length - 1; i >= 0; i -= 1) {
         const file = files[i];
-        fs.readJson(file, (err1, config) => {
+
+        const images = {
+            limenetch: imageFromUrlToBase64('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
+            digitalocean: imageFromUrlToBase64('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
+        };
+
+        fs.readJson(file, (err1, c) => {
+            const config = c;
+            Object.entries(images).forEach(([key, value]) => {
+                config[key] = value;
+            });
+
+            if ('gravatar' in config) {
+                config.gravatar = imageFromUrlToBase64(`https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`);
+            }
+
             if (err1) log.error(err1);
 
             const template = `templates/${config.template}.html`;
+
             const html = `public/${path.basename(file, '.json')}.html`;
 
             let data = '';

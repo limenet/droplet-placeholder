@@ -8,7 +8,8 @@
     "handlebars": "^4.0.10",
     "html-minifier": "^3.5.2",
     "mu2": "^0.5.21",
-    "purify-css": "^1.2.5"
+    "purify-css": "^1.2.5",
+    "sync-request": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
