@@ -3,6 +3,7 @@ const path = require('path');
 const glob = require('glob');
 const mu = require('mu2');
 const minify = require('html-minifier').minify;
+const purifycss = require('purify-css');
 
 glob('configs/*.json', (err0, files) => {
     if (err0) console.error(err0);
@@ -12,6 +13,7 @@ glob('configs/*.json', (err0, files) => {
             if (err1) console.error(err1);
 
             const outFile = path.join(__dirname, '/public/', `${path.basename(file, '.json')}.html`);
+            const outCss = path.join(__dirname, '/public/', `${path.basename(file, '.json')}.css`);
 
             let data = '';
             mu.clearCache();
@@ -39,6 +41,11 @@ glob('configs/*.json', (err0, files) => {
                     } catch (err) {
                         console.error(`Minification failed for ${file}`);
                     }
+                    const bootstrap = fs.readFileSync(path.join(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8');
+                    purifycss(data, bootstrap, {
+                        output: outCss,
+                        minify: true,
+                    });
                     fs.writeFile(outFile, data);
                     console.info(`Success for ${file}`);
                 });
