@@ -4,13 +4,14 @@ const glob = require('glob');
 const mu = require('mu2');
 const minify = require('html-minifier').minify;
 const purifycss = require('purify-css');
+const log = require('chip')();
 
 glob('configs/*.json', (err0, files) => {
-    if (err0) console.error(err0);
+    if (err0) log.error(err0);
     for (let i = files.length - 1; i >= 0; i -= 1) {
         const file = files[i];
         fs.readJson(file, (err1, config) => {
-            if (err1) console.error(err1);
+            if (err1) log.error(err1);
 
             const template = path.join(__dirname, `templates/${config.template}.html`);
             const html = path.join(__dirname, '/public/', `${path.basename(file, '.json')}.html`);
@@ -42,10 +43,10 @@ glob('configs/*.json', (err0, files) => {
                                 useShortDoctype: true,
                             });
                         } catch (err) {
-                            console.error(`Minification failed for ${file}`);
+                            log.error(`Minification failed for ${file}`);
                         }
                         fs.writeFile(html, data);
-                        console.info(`Success for ${file}`);
+                        log.info(file);
                     });
                 });
         });
