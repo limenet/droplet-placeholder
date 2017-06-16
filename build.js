@@ -13,8 +13,8 @@ glob('configs/*.json', (err0, files) => {
         fs.readJson(file, (err1, config) => {
             if (err1) log.error(err1);
 
-            const template = path.join(__dirname, `templates/${config.template}.html`);
-            const html = path.join(__dirname, '/public/', `${path.basename(file, '.json')}.html`);
+            const template = `templates/${config.template}.html`;
+            const html = `public/${path.basename(file, '.json')}.html`;
 
             let data = '';
             mu.clearCache();
@@ -22,7 +22,7 @@ glob('configs/*.json', (err0, files) => {
                 .on('data', (d) => {
                     data += d.toString();
                 }).on('end', () => {
-                    const bootstrap = fs.readFileSync(path.join(__dirname, 'node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8');
+                    const bootstrap = fs.readFileSync('node_modules/bootstrap/dist/css/bootstrap.min.css', 'utf8');
                     purifycss(data, bootstrap, { minify: true }, (css) => {
                         data = data.replace('<style></style>', `<style>${css}</style>`);
                         try {
@@ -46,7 +46,7 @@ glob('configs/*.json', (err0, files) => {
                             log.error(`Minification failed for ${file}`);
                         }
                         fs.writeFile(html, data);
-                        log.info(file);
+                        log.info(path.basename(file));
                     });
                 });
         });
