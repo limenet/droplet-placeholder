@@ -14,7 +14,7 @@ const directories = {
 function renderTemplate(file, config) {
     const basename = path.basename(file, '.json');
     const template = path.join(directories.templates, `${config.template}.html`);
-    const html = path.join(directories.output, `${basename}.html`);
+    const out = path.join(directories.output, `${basename}.html`);
 
     let data = '';
     mu.compileAndRender(template, config)
@@ -23,19 +23,14 @@ function renderTemplate(file, config) {
         })
         .on('end', () => {
             data = data.replace('<style></style>', `<style>${helpers.css(data)}</style>`);
-            try {
-                data = helpers.minifyHtml(data);
-            } catch (err) {
-                log.error(`Minification failed for ${file}`);
-            }
-            fs.writeFile(html, data, (err2) => {
+            data = helpers.minifyHtml(data);
+            fs.writeFile(out, data, (err2) => {
                 if (err2) log.error(err2);
 
                 log.info(basename);
             });
         });
 }
-
 
 function parseConfig(file, c) {
     const images = {
