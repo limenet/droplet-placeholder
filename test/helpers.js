@@ -7,12 +7,13 @@ const cssParser = require('css');
 
 describe('image()', () => {
     const url = 'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png';
+    const image = helpers.image(url).toString();
+    const mimeType = 'image/svg+xml';
+    const imageWrongMime = helpers.image(url, mimeType).toString();
 
-    function regexMatches(mimeType = '') {
+    function regexMatches(wrongMime = false) {
         const regex = '^data:(.*);(.*),(.*)';
-        const image = helpers.image(url, mimeType).toString();
-        if (image === null || image === '') return regexMatches(mimeType);
-        return image.match(regex);
+        return wrongMime ? imageWrongMime.match(regex) : image.match(regex);
     }
 
     it('caches the response', () => {
@@ -26,8 +27,7 @@ describe('image()', () => {
     });
 
     it('respects custom MIME type', () => {
-        const mimeType = 'image/svg+xml';
-        assert.equal(regexMatches(mimeType)[1], mimeType);
+        assert.equal(regexMatches(true)[1], mimeType);
     });
 
     it('contains MIME type', () => {
