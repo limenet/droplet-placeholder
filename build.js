@@ -50,7 +50,7 @@ function imageFromUrlToBase64(url, contentType = null) {
     const cacheDir = 'cache';
     const hash = md5(url + contentType);
     const cache = path.join(cacheDir, hash);
-    const cacheLifetime = 60 * 60 * 1000;
+    const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
     const fileExists = fs.existsSync(cache);
     const cacheInvalid =
         fileExists
