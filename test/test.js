@@ -10,15 +10,11 @@ describe('Images', () => {
     it('caches the response', () => {
         fs.emptyDirSync(helpers.cacheDir);
 
-        const run1Start = process.hrtime();
         assert(helpers.image(url) !== '');
-        const run1 = process.hrtime(run1Start);
 
-        const run2Start = process.hrtime();
-        assert(helpers.image(url) !== '');
-        const run2 = process.hrtime(run2Start);
-
-        assert(run2 < run1);
+        fs.readdir(helpers.cacheDir, (err, items) => {
+            assert(items.length > 1);
+        });
     });
 
     it('returns something', () => {
