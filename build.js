@@ -46,7 +46,7 @@ function css(data) {
     });
 }
 
-function imageFromUrlToBase64(url, contentType = null) {
+function image(url, contentType = null) {
     const cacheDir = 'cache';
     const hash = md5(url + contentType);
     const cache = path.join(cacheDir, hash);
@@ -71,31 +71,32 @@ function imageFromUrlToBase64(url, contentType = null) {
 
 glob('configs/*.json', (err0, files) => {
     if (err0) log.error(err0);
-    for (let i = files.length - 1; i >= 0; i -= 1) {
-        const file = files[i];
 
+    Object.values(files).forEach((file) => {
         const images = {
-            limenetch: imageFromUrlToBase64('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
-            digitalocean: imageFromUrlToBase64('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
-            faCode: imageFromUrlToBase64('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
+            limenetch: image('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
+            digitalocean: image('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
+            faCode: image('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
         };
 
         fs.readJson(file, (err1, c) => {
             if (err1) log.error(err1);
+
             const config = c;
+            const basename = path.basename(file, '.json');
+
             Object.entries(images).forEach(([key, value]) => {
                 config[key] = value;
             });
 
             if ('gravatar' in config) {
-                config.gravatar = imageFromUrlToBase64(`https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`);
+                config.gravatar = image(`https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`);
             }
 
             const template = `templates/${config.template}.html`;
-            const html = `public/${path.basename(file, '.json')}.html`;
+            const html = `public/${basename}.html`;
 
             let data = '';
-            mu.clearCache();
             mu.compileAndRender(template, config)
                 .on('data', (d) => {
                     data += d.toString();
@@ -107,9 +108,12 @@ glob('configs/*.json', (err0, files) => {
                     } catch (err) {
                         log.error(`Minification failed for ${file}`);
                     }
-                    fs.writeFile(html, data);
-                    log.info(path.basename(file));
+                    fs.writeFile(html, data, (err2) => {
+                        if (err2) log.error(err2);
+
+                        log.info(basename);
+                    });
                 });
         });
-    }
+    });
 });
