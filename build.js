@@ -45,10 +45,10 @@ function css(data) {
     });
 }
 
-function imageFromUrlToBase64(url) {
+function imageFromUrlToBase64(url, contentType = null) {
     const req = request('GET', url, { encoding: null });
     if (req.statusCode === 200) {
-        return `data:${req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
+        return `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
     }
     return '';
 }
@@ -61,6 +61,7 @@ glob('configs/*.json', (err0, files) => {
         const images = {
             limenetch: imageFromUrlToBase64('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
             digitalocean: imageFromUrlToBase64('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
+            faCode: imageFromUrlToBase64('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
         };
 
         fs.readJson(file, (err1, c) => {
