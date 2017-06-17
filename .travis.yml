@@ -7,6 +7,6 @@ cache: yarn
 
 before_install: yarn global add istanbul codecov
 
-script: yarn test
+script: yarn run test-travis
 
 after_script: codecov
