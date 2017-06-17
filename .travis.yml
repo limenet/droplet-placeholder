@@ -1,4 +1,10 @@
 language: node_js
+
 node_js:
   - "node"
+
 cache: yarn
+
+before_install: yarn global add istanbul codecov
+
+after_script: codecov
