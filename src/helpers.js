@@ -24,18 +24,23 @@ const htmlMinifyConfig = {
     useShortDoctype: true,
 };
 
+const cssDisallowedRules = ['comment', 'font-face', 'keyframes'];
+
+function removeDisallowedCssRules(cssAst) {
+    const rules = [];
+    for (let j = cssAst.stylesheet.rules.length - 1; j >= 0; j -= 1) {
+        const ruleType = cssAst.stylesheet.rules[j].type;
+        if (!cssDisallowedRules.includes(ruleType)) {
+            rules.push(cssAst.stylesheet.rules[j]);
+        }
+    }
+    return rules;
+}
+
 function purifyCss(file, data) {
     return cssPurifier(data, file, { minify: true }, (result) => {
         const cssAst = cssParser.parse(result);
-        const rules = [];
-        for (let j = cssAst.stylesheet.rules.length - 1; j >= 0; j -= 1) {
-            const ruleType = cssAst.stylesheet.rules[j].type;
-            const disallowedTypes = ['comment', 'font-face', 'keyframes'];
-            if (!disallowedTypes.includes(ruleType)) {
-                rules.push(cssAst.stylesheet.rules[j]);
-            }
-        }
-        cssAst.stylesheet.rules = rules;
+        cssAst.stylesheet.rules = removeDisallowedCssRules(cssAst);
 
         return cssParser.stringify(cssAst);
     });
