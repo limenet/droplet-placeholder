@@ -8,6 +8,8 @@ const log = require('chip')();
 const fs = require('fs-extra');
 
 module.exports = {
+    cacheDir: 'cache',
+
     minifyHtml(html) {
         return minify(html, {
             collapseWhitespace: true,
@@ -46,9 +48,8 @@ module.exports = {
     },
 
     image(url, contentType = null) {
-        const cacheDir = 'cache';
         const hash = md5(url + contentType);
-        const cache = path.join(cacheDir, hash);
+        const cache = path.join(this.cacheDir, hash);
         const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
         const fileExists = fs.existsSync(cache);
         const cacheInvalid =
