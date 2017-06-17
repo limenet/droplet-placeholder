@@ -54,8 +54,8 @@ module.exports = {
         const fileExists = fs.existsSync(cache);
         const cacheInvalid =
         fileExists
-        ? (new Date()) - new Date(fs.statSync(cache).ctime) > cacheLifetime
-        : true;
+            ? (new Date()) - new Date(fs.statSync(cache).ctime) > cacheLifetime
+            : true;
         if (!cacheInvalid) {
             return fs.readFileSync(cache);
         }

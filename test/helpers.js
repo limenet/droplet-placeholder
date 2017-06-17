@@ -8,6 +8,13 @@ const cssParser = require('css');
 describe('image()', () => {
     const url = 'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png';
 
+    function regexMatches(mimeType = '') {
+        const regex = '^data:(.*);(.*),(.*)';
+        const image = helpers.image(url, mimeType).toString();
+        if (image === null || image === '') return regexMatches(mimeType);
+        return image.match(regex);
+    }
+
     it('caches the response', () => {
         fs.emptyDirSync(helpers.cacheDir);
 
@@ -20,31 +27,19 @@ describe('image()', () => {
 
     it('respects custom MIME type', () => {
         const mimeType = 'image/svg+xml';
-        const regex = 'data:(.*);';
-        const image = helpers.image(url, mimeType).toString();
-        const match = image.match(regex);
-        assert.equal(match[1], mimeType);
+        assert.equal(regexMatches(mimeType)[1], mimeType);
     });
 
     it('contains MIME type', () => {
-        const regex = 'data:(.*);';
-        const image = helpers.image(url).toString();
-        const match = image.match(regex);
-        assert.notEqual(mime.extension(match[1]), '');
+        assert.notEqual(mime.extension(regexMatches()[1]), '');
     });
 
     it('contains base64 header', () => {
-        const regex = '^data:(.*);(.*),';
-        const image = helpers.image(url).toString();
-        const match = image.match(regex);
-        assert.equal(match[2], 'base64');
+        assert.equal(regexMatches()[2], 'base64');
     });
 
     it('is in base64', () => {
-        const regex = '^data:(.*);(.*),(.*)';
-        const image = helpers.image(url).toString();
-        const match = image.match(regex);
-        Buffer.from(match[3], 'base64');
+        Buffer.from(regexMatches()[3], 'base64');
     });
 
     it('fails gracefully', () => {

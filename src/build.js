@@ -5,7 +5,13 @@ const mu = require('mu2');
 const log = require('chip')();
 const helpers = require('./helpers');
 
-glob('configs/*.json', (err0, files) => {
+const directories = {
+    output: 'public',
+    templates: 'templates',
+    configs: 'configs',
+};
+
+glob(path.join(directories.configs, '*.json'), (err0, files) => {
     if (err0) log.error(err0);
 
     Object.values(files).forEach((file) => {
@@ -29,8 +35,8 @@ glob('configs/*.json', (err0, files) => {
                 config.gravatar = helpers.image(`https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`);
             }
 
-            const template = `templates/${config.template}.html`;
-            const html = `public/${basename}.html`;
+            const template = path.join(directories.templates, `${config.template}.html`);
+            const html = path.join(directories.output, `${basename}.html`);
 
             let data = '';
             mu.compileAndRender(template, config)
@@ -53,3 +59,7 @@ glob('configs/*.json', (err0, files) => {
         });
     });
 });
+
+module.exports = {
+    directories,
+};
