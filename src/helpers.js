@@ -1,5 +1,5 @@
 const minify = require('html-minifier').minify;
-const purifycss = require('purify-css');
+const cssPurifier = require('purify-css');
 const cssParser = require('css');
 const request = require('sync-request');
 const md5 = require('md5');
@@ -7,44 +7,50 @@ const path = require('path');
 const log = require('chip')();
 const fs = require('fs-extra');
 
+const htmlMinifyConfig = {
+    collapseWhitespace: true,
+    collapseBooleanAttributes: true,
+    collapseInlineTagWhitespace: true,
+    decodeEntities: true,
+    minifyCSS: true,
+    minifyJS: true,
+    minifyURLs: true,
+    removeComments: true,
+    removeEmptyAttributes: true,
+    removeOptionalTags: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    useShortDoctype: true,
+};
+
+function purifyCss(file, data) {
+    return cssPurifier(data, file, { minify: true }, (result) => {
+        const cssAst = cssParser.parse(result);
+        const rules = [];
+        for (let j = cssAst.stylesheet.rules.length - 1; j >= 0; j -= 1) {
+            const ruleType = cssAst.stylesheet.rules[j].type;
+            const disallowedTypes = ['comment', 'font-face', 'keyframes'];
+            if (!disallowedTypes.includes(ruleType)) {
+                rules.push(cssAst.stylesheet.rules[j]);
+            }
+        }
+        cssAst.stylesheet.rules = rules;
+
+        return cssParser.stringify(cssAst);
+    });
+}
+
 module.exports = {
     cacheDir: 'cache',
 
     minifyHtml(html) {
-        return minify(html, {
-            collapseWhitespace: true,
-            collapseBooleanAttributes: true,
-            collapseInlineTagWhitespace: true,
-            decodeEntities: true,
-            minifyCSS: true,
-            minifyJS: true,
-            minifyURLs: true,
-            removeComments: true,
-            removeEmptyAttributes: true,
-            removeOptionalTags: true,
-            removeRedundantAttributes: true,
-            removeScriptTypeAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            useShortDoctype: true,
-        });
+        return minify(html, htmlMinifyConfig);
     },
 
     css(data) {
         const cssFile = fs.readFileSync('node_modules/bootstrap/dist/css/bootstrap.min.css', 'utf8');
-        return purifycss(data, cssFile, { minify: true }, (result) => {
-            const cssAst = cssParser.parse(result);
-            const rules = [];
-            for (let j = cssAst.stylesheet.rules.length - 1; j >= 0; j -= 1) {
-                const ruleType = cssAst.stylesheet.rules[j].type;
-                const disallowedTypes = ['comment', 'font-face', 'keyframes'];
-                if (!disallowedTypes.includes(ruleType)) {
-                    rules.push(cssAst.stylesheet.rules[j]);
-                }
-            }
-            cssAst.stylesheet.rules = rules;
-
-            return cssParser.stringify(cssAst);
-        });
+        return purifyCss(cssFile, data);
     },
 
     image(url, contentType = null) {
