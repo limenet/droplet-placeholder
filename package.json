@@ -22,11 +22,11 @@
   },
   "scripts": {
     "build": "node src/build.js",
-    "test": "mocha",
-    "test-coverage": "istanbul cover ./node_modules/mocha/bin/_mocha",
-    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha",
+    "prepublish": "npm run snyk-protect",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "test": "mocha",
+    "travis": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
   },
   "snyk": true
 }
