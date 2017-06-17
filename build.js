@@ -56,17 +56,17 @@ function imageFromUrlToBase64(url, contentType = null) {
         fileExists
         ? (new Date()) - new Date(fs.statSync(cache).ctime) > cacheLifetime
         : true;
-    if (cacheInvalid) {
-        const req = request('GET', url, { encoding: null });
-        if (req.statusCode === 200) {
-            fs.outputFileSync(cache, `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`);
-        } else {
-            log.error(`Failed to download ${url}`);
-            return '';
-        }
+    if (!cacheInvalid) {
+        return fs.readFileSync(cache);
     }
-
-    return fs.readFileSync(cache);
+    const req = request('GET', url, { encoding: null });
+    if (req.statusCode === 200) {
+        const base64 = `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
+        fs.outputFile(cache, base64);
+        return base64;
+    }
+    log.error(`Failed to download ${url}`);
+    return '';
 }
 
 glob('configs/*.json', (err0, files) => {
@@ -81,6 +81,7 @@ glob('configs/*.json', (err0, files) => {
         };
 
         fs.readJson(file, (err1, c) => {
+            if (err1) log.error(err1);
             const config = c;
             Object.entries(images).forEach(([key, value]) => {
                 config[key] = value;
@@ -90,10 +91,7 @@ glob('configs/*.json', (err0, files) => {
                 config.gravatar = imageFromUrlToBase64(`https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`);
             }
 
-            if (err1) log.error(err1);
-
             const template = `templates/${config.template}.html`;
-
             const html = `public/${path.basename(file, '.json')}.html`;
 
             let data = '';
@@ -101,7 +99,8 @@ glob('configs/*.json', (err0, files) => {
             mu.compileAndRender(template, config)
                 .on('data', (d) => {
                     data += d.toString();
-                }).on('end', () => {
+                })
+                .on('end', () => {
                     data = data.replace('<style></style>', `<style>${css(data)}</style>`);
                     try {
                         data = minifyHtml(data);
