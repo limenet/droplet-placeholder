@@ -7,6 +7,7 @@ const purifycss = require('purify-css');
 const log = require('chip')();
 const cssParser = require('css');
 const request = require('sync-request');
+const md5 = require('md5');
 
 function minifyHtml(html) {
     return minify(html, {
@@ -46,11 +47,26 @@ function css(data) {
 }
 
 function imageFromUrlToBase64(url, contentType = null) {
-    const req = request('GET', url, { encoding: null });
-    if (req.statusCode === 200) {
-        return `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
+    const cacheDir = 'cache';
+    const hash = md5(url + contentType);
+    const cache = path.join(cacheDir, hash);
+    const cacheLifetime = 60 * 60 * 1000;
+    const fileExists = fs.existsSync(cache);
+    const cacheInvalid =
+        fileExists
+        ? (new Date()) - new Date(fs.statSync(cache).ctime) > cacheLifetime
+        : true;
+    if (cacheInvalid) {
+        const req = request('GET', url, { encoding: null });
+        if (req.statusCode === 200) {
+            fs.outputFileSync(cache, `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`);
+        } else {
+            log.error(`Failed to download ${url}`);
+            return '';
+        }
     }
-    return '';
+
+    return fs.readFileSync(cache);
 }
 
 glob('configs/*.json', (err0, files) => {
