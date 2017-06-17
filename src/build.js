@@ -38,34 +38,34 @@ function renderTemplate(file, config) {
         });
 }
 
-function parseConfig(file, config) {
-    const images = {
-        limenetch: helpers.image('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
-        digitalocean: helpers.image('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
-        faCode: helpers.image('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
-    };
+function parseConfig(file) {
+    fs.readJson(file, (err1, c) => {
+        if (err1) log.error(err1);
+        const images = {
+            limenetch: helpers.image('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
+            digitalocean: helpers.image('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
+            faCode: helpers.image('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
+        };
 
-    const c = config;
+        const config = c;
 
-    Object.entries(images).forEach(([key, value]) => {
-        c[key] = value;
+        Object.entries(images).forEach(([key, value]) => {
+            config[key] = value;
+        });
+
+        if ('gravatar' in c) {
+            config.gravatar = helpers.image(`https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`);
+        }
+
+        renderTemplate(file, c);
     });
-
-    if ('gravatar' in c) {
-        c.gravatar = helpers.image(`https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`);
-    }
-
-    renderTemplate(file, c);
 }
 
 glob(path.join(directories.configs, '*.json'), (err0, files) => {
     if (err0) log.error(err0);
 
     Object.values(files).forEach((file) => {
-        fs.readJson(file, (err1, c) => {
-            if (err1) log.error(err1);
-            parseConfig(file, c);
-        });
+        parseConfig(file);
     });
 });
 
