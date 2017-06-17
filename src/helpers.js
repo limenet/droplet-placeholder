@@ -7,6 +7,8 @@ const path = require('path');
 const log = require('chip')();
 const fs = require('fs-extra');
 
+const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
+
 const htmlMinifyConfig = {
     collapseWhitespace: true,
     collapseBooleanAttributes: true,
@@ -46,6 +48,13 @@ function purifyCss(file, data) {
     });
 }
 
+function isCacheExpired(file) {
+    const fileExists = fs.existsSync(file);
+    return fileExists
+            ? (new Date()) - new Date(fs.statSync(file).ctime) > cacheLifetime
+            : true;
+}
+
 module.exports = {
     cacheDir: 'cache',
 
@@ -61,13 +70,7 @@ module.exports = {
     image(url, contentType = null) {
         const hash = md5(url + contentType);
         const cache = path.join(this.cacheDir, hash);
-        const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
-        const fileExists = fs.existsSync(cache);
-        const cacheInvalid =
-        fileExists
-            ? (new Date()) - new Date(fs.statSync(cache).ctime) > cacheLifetime
-            : true;
-        if (!cacheInvalid) {
+        if (!isCacheExpired(cache)) {
             return fs.readFileSync(cache);
         }
         const req = request('GET', url, { encoding: null });
