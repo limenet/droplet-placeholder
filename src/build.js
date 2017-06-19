@@ -48,10 +48,7 @@ function parseConfig(file) {
         };
 
         const config = c;
-
-        Object.entries(images).forEach(([key, value]) => {
-            config[key] = value;
-        });
+        config.images = images;
 
         if ('gravatar' in c) {
             config.gravatar = helpers.image(`https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`);
