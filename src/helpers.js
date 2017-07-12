@@ -51,8 +51,8 @@ function purifyCss(file, data) {
 function isCacheExpired(file) {
     const fileExists = fs.existsSync(file);
     return fileExists
-            ? (new Date()) - new Date(fs.statSync(file).ctime) > cacheLifetime
-            : true;
+        ? (new Date()) - new Date(fs.statSync(file).ctime) > cacheLifetime
+        : true;
 }
 
 module.exports = {
