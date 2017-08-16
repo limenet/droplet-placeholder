@@ -13,7 +13,7 @@
     "mocha": "^3.4.2",
     "mu2": "^0.5.21",
     "purify-css": "^1.2.5",
-    "snyk": "^1.36.2",
+    "snyk": "^1.38.2",
     "sync-request": "^4.1.0"
   },
   "devDependencies": {

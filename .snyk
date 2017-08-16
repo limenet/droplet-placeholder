@@ -6,6 +6,9 @@ ignore:
     - mocha > growl:
         reason: None given
         expires: '2017-08-11T14:40:15.280Z'
+    - mocha > growl:
+        reason: None given
+        expires: '2017-09-15T20:31:52.117Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:ms:20170412':
