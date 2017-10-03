@@ -75,7 +75,7 @@ module.exports = {
         }
         const req = request('GET', url, { encoding: null });
         if (req.statusCode === 200) {
-            const base64 = `data:${contentType || req.headers['content-type']};base64,${new Buffer(req.body).toString('base64')}`;
+            const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(req.body).toString('base64')}`;
             fs.outputFile(cache, base64);
             return base64;
         }
