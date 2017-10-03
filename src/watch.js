@@ -1,6 +1,6 @@
 const chokidar = require('chokidar');
 const build = require('./build');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const log = require('chip')();
 
 chokidar.watch([build.directories.configs, build.directories.templates], {

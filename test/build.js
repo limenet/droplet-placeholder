@@ -4,7 +4,7 @@ const build = require('../src/build');
 const fs = require('fs-extra');
 const glob = require('glob');
 const path = require('path');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 
 describe('build', () => {
     function cleanOutput() {
