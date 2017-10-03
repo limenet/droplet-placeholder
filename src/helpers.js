@@ -1,4 +1,4 @@
-const minify = require('html-minifier').minify;
+const { minify } = require('html-minifier');
 const cssPurifier = require('purify-css');
 const cssParser = require('css');
 const request = require('sync-request');
