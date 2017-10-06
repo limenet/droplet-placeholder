@@ -42,8 +42,8 @@ describe('image()', () => {
         Buffer.from(regexMatches()[3], 'base64');
     });
 
-    it('fails gracefully', () => {
-        assert.equal(helpers.image('https://example.com/404.jpg'), '');
+    it('fails with exception', () => {
+        assert.throws(() => { helpers.image('https://example.com/404.jpg'); });
     });
 });
 

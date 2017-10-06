@@ -12,14 +12,14 @@
     "mime-types": "^2.1.15",
     "mu2": "^0.5.21",
     "purify-css": "^1.2.5",
-    "snyk": "^1.42.4",
+    "snyk": "^1.41.1",
     "sync-request": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^4.7.2",
-    "eslint-config-airbnb-base": "^12.0.2",
+    "eslint-config-airbnb-base": "^12.0.1",
     "eslint-plugin-import": "^2.7.0",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.0"
   },
   "scripts": {
     "build": "node src/build.js",
@@ -28,6 +28,7 @@
     "snyk-protect": "snyk protect",
     "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "travis": "yarn run test",
+    "unit": "./node_modules/.bin/mocha",
     "watch": "node src/watch.js"
   },
   "snyk": true

@@ -55,6 +55,22 @@ function isCacheExpired(file) {
         : true;
 }
 
+function DownloadException(url, code) {
+    this.message = 'Failed to download';
+    this.url = url;
+    this.code = code;
+    this.toString = () => `[${this.code}] ${this.message} ${this.url}`;
+}
+
+function downloadImageAsBase64(url, contentType = null) {
+    const req = request('GET', url, { encoding: null });
+    if (req.statusCode >= 400) {
+        throw new DownloadException(url, req.statusCode);
+    }
+    const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(req.body).toString('base64')}`;
+    return base64;
+}
+
 module.exports = {
     cacheDir: 'cache',
 
@@ -70,16 +86,9 @@ module.exports = {
     image(url, contentType = null) {
         const hash = md5(url + contentType);
         const cache = path.join(this.cacheDir, hash);
-        if (!isCacheExpired(cache)) {
-            return fs.readFileSync(cache);
+        if (isCacheExpired(cache)) {
+            fs.outputFileSync(cache, downloadImageAsBase64(url, contentType));
         }
-        const req = request('GET', url, { encoding: null });
-        if (req.statusCode === 200) {
-            const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(req.body).toString('base64')}`;
-            fs.outputFile(cache, base64);
-            return base64;
-        }
-        log.error(`Failed to download ${url}`);
-        return '';
+        return fs.readFileSync(cache);
     },
 };
