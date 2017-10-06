@@ -43,7 +43,7 @@ describe('image()', () => {
     });
 
     it('fails with exception', () => {
-        assert.throws(() => { helpers.image('https://example.com/404.jpg'); });
+        assert.throws(() => { helpers.image('https://example.com/404.jpg'); }, helpers.DownloadException);
     });
 });
 

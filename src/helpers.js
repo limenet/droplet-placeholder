@@ -4,7 +4,6 @@ const cssParser = require('css');
 const request = require('sync-request');
 const md5 = require('md5');
 const path = require('path');
-const log = require('chip')();
 const fs = require('fs-extra');
 
 const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
@@ -91,4 +90,5 @@ module.exports = {
         }
         return fs.readFileSync(cache);
     },
+    DownloadException,
 };
