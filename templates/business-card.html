@@ -10,6 +10,10 @@
                 background-size: contain;
                 cursor: pointer;
             }
+            body {
+                margin: 0;
+                padding: 0;
+            }
             #content{
                 display: none;
             }
@@ -17,17 +21,13 @@
         <script>
 /* eslint-env browser */
 function setDimensions() {
-    const w = window;
-    const d = document;
-    const e = d.documentElement;
-    const g = d.getElementsByTagName('body')[0];
-    const x = w.innerWidth || e.clientWidth || g.clientWidth;
-    const y = w.innerHeight || e.clientHeight || g.clientHeight;
-    document.body.style.width = `${x}px`;
-    document.body.style.height = `${y}px`;
+    const w = window; const d = document; const e = d.documentElement; const g = d.getElementsByTagName('body')[0];
+    const x = w.innerWidth || e.clientWidth || g.clientWidth; const y = w.innerHeight || e.clientHeight || g.clientHeight;
+    document.body.style.width = `${x}px`; document.body.style.height = `${y}px`;
 }
 document.addEventListener('DOMContentLoaded', () => { setDimensions(); });
 window.onresize = () => { setDimensions(); };
+window.onclick = () => { window.location.href = '{{link}}'; };
         </script>
     </head>
     <body>
@@ -41,7 +41,7 @@ window.onresize = () => { setDimensions(); };
                         a.GoogleAnalyticsObject = e, a[e] = a[e] || function() {
                             (a[e].q = a[e].q || []).push(arguments)
                         }, a[e].l = 1 * new Date, f = b.createElement(c), g = b.getElementsByTagName(c)[0], f.async = 1, f.src = d, g.parentNode.insertBefore(f, g)
-                    }(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga"), ga("create", {{google_analytics}}, "auto"), ga("send", "pageview");
+                    }(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga"), ga("create", '{{google_analytics}}', "auto"), ga("send", "pageview");
                 </script>
             {{/google_analytics}}
     </body>

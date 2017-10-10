@@ -1,7 +1,7 @@
 const chokidar = require('chokidar');
 const build = require('./build');
 const { exec } = require('child_process');
-const log = require('chip')();
+const log = require('cedar')();
 
 chokidar.watch([build.directories.configs, build.directories.templates], {
     // eslint-disable-next-line no-useless-escape

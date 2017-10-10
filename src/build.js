@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 const mu = require('mu2');
-const log = require('chip')();
+const log = require('cedar')();
 const helpers = require('./helpers');
 
 const directories = {
