@@ -12,3 +12,6 @@ before_install: yarn global add istanbul codecov
 script: yarn run travis
 
 after_script: codecov
+
+notifications:
+  webhooks: https://pxzsh9bl7b.execute-api.eu-central-1.amazonaws.com/dev/webhook
