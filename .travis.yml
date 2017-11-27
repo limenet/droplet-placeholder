@@ -3,7 +3,9 @@ dist: trusty
 language: node_js
 
 node_js:
-  - "node"
+  - node
+  - 8
+  - lts/*
 
 cache: yarn
 
