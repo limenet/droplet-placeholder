@@ -16,4 +16,4 @@ script: yarn run travis
 after_script: codecov
 
 notifications:
-  webhooks: https://yfojgmijx6.execute-api.eu-central-1.amazonaws.com/dev/webhook
+  webhooks: https://ci-notification.limenet.xyz/dev/webhook
