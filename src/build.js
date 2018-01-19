@@ -1,9 +1,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
-const mu = require('mu2');
 const log = require('cedar')();
 const helpers = require('./helpers');
+const mustache = require('mustache');
 
 const directories = {
     output: 'public',
@@ -28,14 +28,8 @@ function renderTemplate(file, config) {
     const template = path.join(directories.templates, `${config.template}.html`);
     const out = path.join(directories.output, `${basename}.html`);
 
-    let data = '';
-    mu.compileAndRender(template, config)
-        .on('data', (d) => {
-            data += d.toString();
-        })
-        .on('end', () => {
-            outputHtml(out, data);
-        });
+    const data = mustache.render(fs.readFileSync(template, 'utf8'), config);
+    outputHtml(out, data);
 }
 
 function parseConfig(file) {

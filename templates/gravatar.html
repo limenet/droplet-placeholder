@@ -8,14 +8,14 @@
     </head>
     <body>
         <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
+            <div class="row m-3">
+                <div class="col text-center">
                     <h1>
                         {{#images}}<img src="{{faCode}}" height="72">{{/images}}
                         <br><br>
                         <span class="text-muted">{{title}}</span>
                         <br><br>
-                        <img src="{{gravatar}}" alt="{{title}}" class="img-circle" height="256" width="256">
+                        <img src="{{gravatar}}" alt="{{title}}" class="rounded-circle" height="256" width="256">
                     </h1>
                     <br>
                     {{#images}}<a href="https://www.digitalocean.com/?refcode=b8d0f3b149a7"><img src="{{digitalocean}}" alt="Digital Ocean"></a>{{/images}}

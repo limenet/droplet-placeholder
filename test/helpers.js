@@ -51,13 +51,4 @@ describe('css()', () => {
     it('returns valid CSS', () => {
         assert.doesNotThrow(() => { cssParser.parse(helpers.css('')); });
     });
-
-    it('strips comments and @font-face', () => {
-        assert.doesNotThrow(() => {
-            Object.values(cssParser.parse(helpers.css('')).stylesheet.rules).forEach((rule) => {
-                assert.notEqual(rule.type, 'comment');
-                assert.notEqual(rule.type, 'font-face');
-            });
-        });
-    });
 });

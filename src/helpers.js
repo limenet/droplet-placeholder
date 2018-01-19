@@ -1,6 +1,4 @@
 const { minify } = require('html-minifier');
-const cssPurifier = require('purify-css');
-const cssParser = require('css');
 const request = require('sync-request');
 const md5 = require('md5');
 const path = require('path');
@@ -24,28 +22,6 @@ const htmlMinifyConfig = {
     removeStyleLinkTypeAttributes: true,
     useShortDoctype: true,
 };
-
-const cssDisallowedRules = ['comment', 'font-face', 'keyframes'];
-
-function removeDisallowedCssRules(cssAst) {
-    const rules = [];
-    for (let j = cssAst.stylesheet.rules.length - 1; j >= 0; j -= 1) {
-        const ruleType = cssAst.stylesheet.rules[j].type;
-        if (!cssDisallowedRules.includes(ruleType)) {
-            rules.push(cssAst.stylesheet.rules[j]);
-        }
-    }
-    return rules;
-}
-
-function purifyCss(file, data) {
-    return cssPurifier(data, file, { minify: true }, (result) => {
-        const cssAst = cssParser.parse(result);
-        cssAst.stylesheet.rules = removeDisallowedCssRules(cssAst);
-
-        return cssParser.stringify(cssAst);
-    });
-}
 
 function isCacheExpired(file) {
     const fileExists = fs.existsSync(file);
@@ -77,9 +53,9 @@ module.exports = {
         return minify(html, htmlMinifyConfig);
     },
 
-    css(data) {
+    css() {
         const cssFile = fs.readFileSync('node_modules/bootstrap/dist/css/bootstrap.min.css', 'utf8');
-        return purifyCss(cssFile, data);
+        return cssFile;
     },
 
     image(url, contentType = null) {
