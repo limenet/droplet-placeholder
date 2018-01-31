@@ -12,7 +12,7 @@
     "mime-types": "^2.1.15",
     "mustache": "^2.3.0",
     "snyk": "^1.69.1",
-    "sync-request": "^4.1.0"
+    "sync-request": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^4.15.0",
