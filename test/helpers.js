@@ -22,7 +22,7 @@ describe('image()', () => {
         assert.notStrictEqual(helpers.image(url), '');
 
         fs.readdir(helpers.cacheDir, (err, items) => {
-            assert(items.length > 1);
+            assert(items.length > 0);
         });
     });
 
