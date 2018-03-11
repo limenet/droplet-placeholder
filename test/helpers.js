@@ -19,7 +19,7 @@ describe('image()', () => {
     it('caches the response', () => {
         fs.emptyDirSync(helpers.cacheDir);
 
-        assert.notEqual(helpers.image(url), '');
+        assert.notStrictEqual(helpers.image(url), '');
 
         fs.readdir(helpers.cacheDir, (err, items) => {
             assert(items.length > 1);
@@ -27,15 +27,15 @@ describe('image()', () => {
     });
 
     it('respects custom MIME type', () => {
-        assert.equal(regexMatches(true)[1], mimeType);
+        assert.strictEqual(regexMatches(true)[1], mimeType);
     });
 
     it('contains MIME type', () => {
-        assert.notEqual(mime.extension(regexMatches()[1]), '');
+        assert.notStrictEqual(mime.extension(regexMatches()[1]), '');
     });
 
     it('contains base64 header', () => {
-        assert.equal(regexMatches()[2], 'base64');
+        assert.strictEqual(regexMatches()[2], 'base64');
     });
 
     it('is in base64', () => {
