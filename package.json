@@ -1,16 +1,17 @@
 {
+  "name": "droplet-placeholder",
   "dependencies": {
     "bootstrap": "^4.1.1",
     "cedar": "^0.3.2",
     "chokidar": "^2.0.3",
-    "css": "^2.2.1",
+    "css": "^2.2.3",
     "fs-extra": "^6.0.0",
     "glob": "^7.1.2",
     "html-minifier": "^3.5.15",
     "md5": "^2.2.1",
     "mime-types": "^2.1.18",
     "mustache": "^2.3.0",
-    "snyk": "^1.78.0",
+    "snyk": "^1.79.0",
     "sync-request": "^6.0.0"
   },
   "devDependencies": {
