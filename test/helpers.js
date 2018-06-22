@@ -1,9 +1,9 @@
 /* eslint-env node, mocha */
 const assert = require('assert');
-const helpers = require('../src/helpers');
 const mime = require('mime-types');
 const fs = require('fs-extra');
 const cssParser = require('css');
+const helpers = require('../src/helpers');
 
 describe('image()', () => {
     const url = 'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png';
@@ -43,12 +43,16 @@ describe('image()', () => {
     });
 
     it('fails with exception', () => {
-        assert.throws(() => { helpers.image('https://example.com/404.jpg'); }, helpers.DownloadException);
+        assert.throws(() => {
+            helpers.image('https://example.com/404.jpg');
+        }, helpers.DownloadException);
     });
 });
 
 describe('css()', () => {
     it('returns valid CSS', () => {
-        assert.doesNotThrow(() => { cssParser.parse(helpers.css('')); });
+        assert.doesNotThrow(() => {
+            cssParser.parse(helpers.css(''));
+        });
     });
 });

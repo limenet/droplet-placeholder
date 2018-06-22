@@ -2,8 +2,8 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob');
 const log = require('cedar')();
-const helpers = require('./helpers');
 const mustache = require('mustache');
+const helpers = require('./helpers');
 
 const directories = {
     output: 'public',
@@ -36,16 +36,25 @@ function parseConfig(file) {
     fs.readJson(file, (err1, c) => {
         if (err1) log.error(err1);
         const images = {
-            limenetch: helpers.image('https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'),
-            digitalocean: helpers.image('https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png'),
-            faCode: helpers.image('https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg', 'image/svg+xml'),
+            limenetch: helpers.image(
+                'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png',
+            ),
+            digitalocean: helpers.image(
+                'https://s3.amazonaws.com/multisite-misc-assets/do-hosted-by.png',
+            ),
+            faCode: helpers.image(
+                'https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg',
+                'image/svg+xml',
+            ),
         };
 
         const config = c;
         config.images = images;
 
         if ('gravatar' in c) {
-            config.gravatar = helpers.image(`https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`);
+            config.gravatar = helpers.image(
+                `https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`,
+            );
         }
 
         renderTemplate(file, c);

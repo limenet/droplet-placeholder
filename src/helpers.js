@@ -25,9 +25,7 @@ const htmlMinifyConfig = {
 
 function isCacheExpired(file) {
     const fileExists = fs.existsSync(file);
-    return fileExists
-        ? (new Date()) - new Date(fs.statSync(file).ctime) > cacheLifetime
-        : true;
+    return fileExists ? new Date() - new Date(fs.statSync(file).ctime) > cacheLifetime : true;
 }
 
 function DownloadException(url, code) {
@@ -42,7 +40,9 @@ function downloadImageAsBase64(url, contentType = null) {
     if (req.statusCode >= 400) {
         throw new DownloadException(url, req.statusCode);
     }
-    const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(req.body).toString('base64')}`;
+    const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(
+        req.body,
+    ).toString('base64')}`;
     return base64;
 }
 
@@ -54,7 +54,10 @@ module.exports = {
     },
 
     css() {
-        const cssFile = fs.readFileSync('node_modules/bootstrap/dist/css/bootstrap.min.css', 'utf8');
+        const cssFile = fs.readFileSync(
+            'node_modules/bootstrap/dist/css/bootstrap.min.css',
+            'utf8',
+        );
         return cssFile;
     },
 
