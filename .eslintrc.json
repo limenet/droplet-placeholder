@@ -1,13 +1,11 @@
 {
-    "extends": "airbnb-base",
-    "plugins": [
-        "import"
-    ],
-    "rules" : {
-        "indent": ["error", 4],
-        "no-console": ["off"]
-    },
-    "env": {
-        "node": true
-    }
+  "extends": "airbnb-base",
+  "plugins": ["import"],
+  "rules": {
+    "no-console": "off",
+    "linebreak-style": "off"
+  },
+  "env": {
+    "node": true
+  }
 }
