@@ -40,9 +40,9 @@ function downloadImageAsBase64(url, contentType = null) {
   if (req.statusCode >= 400) {
     throw new DownloadException(url, req.statusCode);
   }
-  const base64 = `data:${contentType || req.headers['content-type']};base64,${Buffer.from(
-    req.body,
-  ).toString('base64')}`;
+  const imgBase64 = Buffer.from(req.body).toString('base64');
+  const imgType = contentType || req.headers['content-type'];
+  const base64 = `data:${imgType};base64,${imgBase64}`;
   return base64;
 }
 
