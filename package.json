@@ -1,7 +1,7 @@
 {
   "name": "droplet-placeholder",
   "dependencies": {
-    "bootstrap": "^4.1.1",
+    "bootstrap": "^4.1.2",
     "cedar": "^0.3.3",
     "chokidar": "^2.0.4",
     "css": "^2.2.3",
