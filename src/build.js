@@ -37,14 +37,14 @@ function parseConfig(file) {
     if (err1) log.error(err1);
     const images = {
       limenetch: helpers.image(
-        'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png',
+        'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'
       ),
       digitalocean: helpers.image(
-        'https://s3.amazonaws.com/multisite-misc-assets/DO_Powered_by_Badge_black.svg',
+        'https://s3.amazonaws.com/multisite-misc-assets/DO_Powered_by_Badge_black.svg'
       ),
       faCode: helpers.image(
         'https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg',
-        'image/svg+xml',
+        'image/svg+xml'
       ),
     };
 
@@ -53,7 +53,7 @@ function parseConfig(file) {
 
     if ('gravatar' in c) {
       config.gravatar = helpers.image(
-        `https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`,
+        `https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`
       );
     }
 
