@@ -67,6 +67,10 @@ glob(path.join(directories.configs, '*.json'), (err0, files) => {
   Object.values(files).forEach((file) => {
     parseConfig(file);
   });
+  fs.copySync(
+    path.join(__dirname, '..', '_redirects'),
+    path.join(directories.output, '_redirects')
+  );
 });
 
 module.exports = {
