@@ -1,6 +1,6 @@
 # droplet-placeholder
 
-[![Build Status](https://travis-ci.org/limenet/droplet-placeholder.svg?branch=master)](https://travis-ci.org/limenet/droplet-placeholder)
+[![Node.js CI](https://github.com/limenet/droplet-placeholder/actions/workflows/node.yaml/badge.svg)](https://github.com/limenet/droplet-placeholder/actions/workflows/node.yaml)
 [![codecov](https://codecov.io/gh/limenet/droplet-placeholder/branch/master/graph/badge.svg)](https://codecov.io/gh/limenet/droplet-placeholder)
 [![Greenkeeper badge](https://badges.greenkeeper.io/limenet/droplet-placeholder.svg)](https://greenkeeper.io/)
 [![Known Vulnerabilities](https://snyk.io/test/github/limenet/droplet-placeholder/badge.svg)](https://snyk.io/test/github/limenet/droplet-placeholder)
