@@ -16,11 +16,13 @@ describe('build', () => {
   }
 
   function countConfig() {
-    return fs.readdirSync(build.directories.configs);
+    return fs.readdirSync(build.directories.configs).length;
   }
 
   function countOutput() {
-    return fs.readdirSync(build.directories.output);
+    return fs
+      .readdirSync(build.directories.output)
+      .filter((f) => f.endsWith('.html')).length;
   }
 
   it('generates output files', () => {
@@ -33,7 +35,7 @@ describe('build', () => {
   it('compiles each config', () => {
     cleanOutput();
     exec('npm run build', () => {
-      assert.equals(countOutput(), countConfig());
+      assert(countOutput() === countConfig());
     });
   });
 });

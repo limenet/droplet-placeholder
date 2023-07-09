@@ -16,12 +16,13 @@
   },
   "devDependencies": {
     "eslint": "^8.44.0",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0"
   },
   "scripts": {
     "build": "node src/build.js",
-    "test": "nyc mocha",
+    "test": "mocha",
+    "coverage": "nyc mocha",
     "watch": "node src/watch.js",
     "lint": "eslint src/ test"
   }
