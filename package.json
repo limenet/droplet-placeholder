@@ -15,7 +15,7 @@
     "sync-request": "^6.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "eslint": "^8.44.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0"
   },
@@ -26,7 +26,8 @@
     "snyk-protect": "snyk protect",
     "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "unit": "./node_modules/.bin/mocha",
-    "watch": "node src/watch.js"
+    "watch": "node src/watch.js",
+    "lint": "eslint src/ test"
   },
   "snyk": true
 }
