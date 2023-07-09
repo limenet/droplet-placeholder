@@ -22,7 +22,7 @@
   "scripts": {
     "build": "node src/build.js",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
-    "prepublish": "yarn run snyk-protect",
+    "prepublish": "npm run snyk-protect",
     "snyk-protect": "snyk protect",
     "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "travis": "yarn run test",
