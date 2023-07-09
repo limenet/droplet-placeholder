@@ -11,7 +11,7 @@ chokidar
   })
   .on('all', (event, path) => {
     log.log(`${event}: ${path}`);
-    exec('yarn run build', () => {
+    exec('npm run build', () => {
       log.info('ran build');
     });
   });

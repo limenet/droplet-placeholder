@@ -3,4 +3,4 @@
 
   publish = "public/"
 
-  command = "yarn run build"
+  command = "npm run build"

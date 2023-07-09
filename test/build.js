@@ -25,14 +25,14 @@ describe('build', () => {
 
   it('generates output files', () => {
     cleanOutput();
-    exec('yarn run build', () => {
+    exec('npm run build', () => {
       assert(countOutput() > 1);
     });
   });
 
   it('compiles each config', () => {
     cleanOutput();
-    exec('yarn run build', () => {
+    exec('npm run build', () => {
       assert.equals(countOutput(), countConfig());
     });
   });
