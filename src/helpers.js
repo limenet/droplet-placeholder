@@ -57,7 +57,7 @@ module.exports = {
 
   css() {
     const cssFile = fs.readFileSync(
-      'node_modules/bootstrap/dist/css/bootstrap.min.css',
+      'node_modules/water.css/out/water.min.css',
       'utf8'
     );
     return cssFile;

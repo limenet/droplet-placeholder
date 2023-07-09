@@ -39,13 +39,6 @@ function parseConfig(file) {
       limenetch: helpers.image(
         'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'
       ),
-      digitalocean: helpers.image(
-        'https://s3.amazonaws.com/multisite-misc-assets/DO_Powered_by_Badge_black.svg'
-      ),
-      faCode: helpers.image(
-        'https://raw.githubusercontent.com/encharm/Font-Awesome-SVG-PNG/master/black/svg/code.svg',
-        'image/svg+xml'
-      ),
     };
 
     const config = c;
