@@ -3,3 +3,4 @@ cache/
 coverage/
 yarn-error.log
 public/_redirects
+.nyc_output/

@@ -16,18 +16,13 @@
   },
   "devDependencies": {
     "eslint": "^8.44.0",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^15.1.0"
   },
   "scripts": {
     "build": "node src/build.js",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
-    "prepublish": "npm run snyk-protect",
-    "snyk-protect": "snyk protect",
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
-    "unit": "./node_modules/.bin/mocha",
+    "test": "nyc mocha",
     "watch": "node src/watch.js",
     "lint": "eslint src/ test"
-  },
-  "snyk": true
+  }
 }
