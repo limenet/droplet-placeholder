@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const glob = require('glob');
+const { globSync } = require('glob');
 const log = require('cedar')();
 const mustache = require('mustache');
 const helpers = require('./helpers');
@@ -61,17 +61,14 @@ function parseConfig(file) {
   });
 }
 
-glob(path.join(directories.configs, '*.json'), (err0, files) => {
-  if (err0) log.error(err0);
-
-  Object.values(files).forEach((file) => {
-    parseConfig(file);
-  });
-  fs.copySync(
-    path.join(__dirname, '..', '_redirects'),
-    path.join(directories.output, '_redirects')
-  );
+const files = globSync(path.join(directories.configs, '*.json'));
+Object.values(files).forEach((file) => {
+  parseConfig(file);
 });
+fs.copySync(
+  path.join(__dirname, '..', '_redirects'),
+  path.join(directories.output, '_redirects')
+);
 
 module.exports = {
   directories,

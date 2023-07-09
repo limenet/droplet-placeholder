@@ -1,17 +1,16 @@
 /* eslint-env node, mocha */
 const assert = require('assert');
 const fs = require('fs-extra');
-const glob = require('glob');
+const { globSync } = require('glob');
 const path = require('path');
 const { exec } = require('child_process');
 const build = require('../src/build');
 
 describe('build', () => {
   function cleanOutput() {
-    glob(path.join(build.directories.output, '*.html'), (err0, files) => {
-      Object.values(files).forEach((file) => {
-        fs.unlink(file);
-      });
+    const files = globSync(path.join(build.directories.output, '*.html'));
+    Object.values(files).forEach((file) => {
+      fs.unlink(file);
     });
   }
 
