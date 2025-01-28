@@ -2,10 +2,10 @@
   "name": "droplet-placeholder",
   "dependencies": {
     "cedar": "^0.3.4",
-    "chokidar": "^3.6.0",
+    "chokidar": "^4.0.3",
     "css": "^3.0.0",
     "fs-extra": "^11.3.0",
-    "glob": "^10.4.5",
+    "glob": "^11.0.1",
     "html-minifier": "^4.0.0",
     "md5": "^2.2.1",
     "mime-types": "^2.1.35",
@@ -16,8 +16,8 @@
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "mocha": "^10.2.0",
-    "nyc": "^15.1.0"
+    "mocha": "^11.1.0",
+    "nyc": "^17.1.0"
   },
   "scripts": {
     "build": "node src/build.js",
