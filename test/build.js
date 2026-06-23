@@ -1,4 +1,3 @@
-/* eslint-env node, mocha */
 const assert = require('assert');
 const fs = require('fs-extra');
 const { globSync } = require('glob');

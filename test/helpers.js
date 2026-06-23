@@ -1,4 +1,3 @@
-/* eslint-env node, mocha */
 const assert = require('assert');
 const mime = require('mime-types');
 const fs = require('fs-extra');
