@@ -1,17 +1,16 @@
-const chokidar = require('chokidar');
-const { exec } = require('child_process');
-const log = require('cedar')();
+const fs = require('node:fs');
+const path = require('node:path');
+const { exec } = require('node:child_process');
 const build = require('./build');
 
-chokidar
-  .watch([build.directories.configs, build.directories.templates], {
-    // eslint-disable-next-line no-useless-escape
-    ignored: /(^|[\/\\])\../,
-    persistent: true,
-  })
-  .on('all', (event, path) => {
-    log.log(`${event}: ${path}`);
+const watched = [build.directories.configs, build.directories.templates];
+
+watched.forEach((dir) => {
+  fs.watch(dir, { recursive: true }, (event, filename) => {
+    if (filename && path.basename(filename).startsWith('.')) return;
+    console.info(`${event}: ${path.join(dir, filename ?? '')}`);
     exec('npm run build', () => {
-      log.info('ran build');
+      console.info('ran build');
     });
   });
+});

@@ -1,57 +1,60 @@
-const assert = require('assert');
-const mime = require('mime-types');
-const fs = require('fs-extra');
-const cssParser = require('css');
+const { describe, it } = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
 const helpers = require('../src/helpers');
 
+const url =
+  'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png';
+const mimeType = 'image/svg+xml';
+
+const dataUriRegex = /^data:([^;]+);([^,]+),(.*)$/s;
+
 describe('image()', () => {
-  const url = 'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png';
-  const image = helpers.image(url).toString();
-  const mimeType = 'image/svg+xml';
-  const imageWrongMime = helpers.image(url, mimeType).toString();
+  it('caches the response', async () => {
+    fs.rmSync(helpers.cacheDir, { recursive: true, force: true });
 
-  function regexMatches(wrongMime = false) {
-    const regex = '^data:(.*);(.*),(.*)';
-    return wrongMime ? imageWrongMime.match(regex) : image.match(regex);
-  }
+    assert.notStrictEqual(await helpers.image(url), '');
 
-  it('caches the response', () => {
-    fs.emptyDirSync(helpers.cacheDir);
-
-    assert.notStrictEqual(helpers.image(url), '');
-
-    fs.readdir(helpers.cacheDir, (err, items) => {
-      assert(items.length > 0);
-    });
+    assert(fs.readdirSync(helpers.cacheDir).length > 0);
   });
 
-  it('respects custom MIME type', () => {
-    assert.strictEqual(regexMatches(true)[1], mimeType);
+  it('respects custom MIME type', async () => {
+    const match = (await helpers.image(url, mimeType)).match(dataUriRegex);
+    assert.strictEqual(match[1], mimeType);
   });
 
-  it('contains MIME type', () => {
-    assert.notStrictEqual(mime.extension(regexMatches()[1]), '');
+  it('contains a MIME type', async () => {
+    const match = (await helpers.image(url)).match(dataUriRegex);
+    assert.match(match[1], /^[\w.+-]+\/[\w.+-]+$/);
   });
 
-  it('contains base64 header', () => {
-    assert.strictEqual(regexMatches()[2], 'base64');
+  it('contains base64 header', async () => {
+    const match = (await helpers.image(url)).match(dataUriRegex);
+    assert.strictEqual(match[2], 'base64');
   });
 
-  it('is in base64', () => {
-    Buffer.from(regexMatches()[3], 'base64');
+  it('is in base64', async () => {
+    const match = (await helpers.image(url)).match(dataUriRegex);
+    assert.doesNotThrow(() => Buffer.from(match[3], 'base64'));
   });
 
-  it('fails with exception', () => {
-    assert.throws(() => {
-      helpers.image('https://example.com/404.jpg');
-    });
+  it('fails with exception', async () => {
+    await assert.rejects(() => helpers.image('https://example.com/404.jpg'));
   });
 });
 
 describe('css()', () => {
   it('returns valid CSS', () => {
-    assert.doesNotThrow(() => {
-      cssParser.parse(helpers.css(''));
-    });
+    const css = helpers.css();
+    assert(typeof css === 'string' && css.length > 0);
+    assert.match(css, /\{[^}]*\}/);
+  });
+});
+
+describe('minifyHtml()', () => {
+  it('collapses whitespace', async () => {
+    const out = await helpers.minifyHtml('<p>   hello   </p>');
+    assert(out.includes('hello'));
+    assert(!out.includes('   '));
   });
 });

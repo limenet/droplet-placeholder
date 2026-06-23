@@ -1,8 +1,7 @@
-const { minify } = require('html-minifier');
-const request = require('sync-request');
-const md5 = require('md5');
-const path = require('path');
-const fs = require('fs-extra');
+const { minify } = require('html-minifier-terser');
+const crypto = require('node:crypto');
+const path = require('node:path');
+const fs = require('node:fs');
 
 const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
 
@@ -24,8 +23,7 @@ const htmlMinifyConfig = {
 };
 
 function isCacheExpired(file) {
-  const fileExists = fs.existsSync(file);
-  return fileExists
+  return fs.existsSync(file)
     ? new Date() - new Date(fs.statSync(file).ctime) > cacheLifetime
     : true;
 }
@@ -37,39 +35,38 @@ function DownloadException(url, code) {
   this.toString = () => `[${this.code}] ${this.message} ${this.url}`;
 }
 
-function downloadImageAsBase64(url, contentType = null) {
-  const req = request('GET', url, { encoding: null });
-  if (req.statusCode >= 400) {
-    throw new DownloadException(url, req.statusCode);
+async function downloadImageAsBase64(url, contentType = null) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new DownloadException(url, res.status);
   }
-  const imgBase64 = Buffer.from(req.body).toString('base64');
-  const imgType = contentType || req.headers['content-type'];
-  const base64 = `data:${imgType};base64,${imgBase64}`;
-  return base64;
+  const imgBase64 = Buffer.from(await res.arrayBuffer()).toString('base64');
+  const imgType = contentType || res.headers.get('content-type');
+  return `data:${imgType};base64,${imgBase64}`;
 }
 
 module.exports = {
   cacheDir: 'cache',
 
-  minifyHtml(html) {
+  async minifyHtml(html) {
     return minify(html, htmlMinifyConfig);
   },
 
   css() {
-    const cssFile = fs.readFileSync(
-      'node_modules/water.css/out/water.min.css',
-      'utf8'
-    );
-    return cssFile;
+    return fs.readFileSync('node_modules/water.css/out/water.min.css', 'utf8');
   },
 
-  image(url, contentType = null) {
-    const hash = md5(url + contentType);
+  async image(url, contentType = null) {
+    const hash = crypto
+      .createHash('md5')
+      .update(url + contentType)
+      .digest('hex');
     const cache = path.join(this.cacheDir, hash);
     if (isCacheExpired(cache)) {
-      fs.outputFileSync(cache, downloadImageAsBase64(url, contentType));
+      fs.mkdirSync(this.cacheDir, { recursive: true });
+      fs.writeFileSync(cache, await downloadImageAsBase64(url, contentType));
     }
-    return fs.readFileSync(cache);
+    return fs.readFileSync(cache, 'utf8');
   },
   DownloadException,
 };

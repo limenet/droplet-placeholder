@@ -1,39 +1,38 @@
-const assert = require('assert');
-const fs = require('fs-extra');
-const { globSync } = require('glob');
-const path = require('path');
-const { exec } = require('child_process');
+const { describe, it, before } = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
 const build = require('../src/build');
 
+function cleanOutput() {
+  fs.readdirSync(build.directories.output)
+    .filter((f) => f.endsWith('.html'))
+    .forEach((f) => fs.unlinkSync(path.join(build.directories.output, f)));
+}
+
+function countConfig() {
+  return fs
+    .readdirSync(build.directories.configs)
+    .filter((f) => f.endsWith('.json')).length;
+}
+
+function countOutput() {
+  return fs
+    .readdirSync(build.directories.output)
+    .filter((f) => f.endsWith('.html')).length;
+}
+
 describe('build', () => {
-  function cleanOutput() {
-    const files = globSync(path.join(build.directories.output, '*.html'));
-    Object.values(files).forEach((file) => {
-      fs.unlink(file);
-    });
-  }
-
-  function countConfig() {
-    return fs.readdirSync(build.directories.configs).length;
-  }
-
-  function countOutput() {
-    return fs
-      .readdirSync(build.directories.output)
-      .filter((f) => f.endsWith('.html')).length;
-  }
+  before(async () => {
+    cleanOutput();
+    await build.main();
+  });
 
   it('generates output files', () => {
-    cleanOutput();
-    exec('npm run build', () => {
-      assert(countOutput() > 1);
-    });
+    assert(countOutput() > 1);
   });
 
   it('compiles each config', () => {
-    cleanOutput();
-    exec('npm run build', () => {
-      assert(countOutput() === countConfig());
-    });
+    assert.strictEqual(countOutput(), countConfig());
   });
 });

@@ -1,7 +1,5 @@
-const fs = require('fs-extra');
-const path = require('path');
-const { globSync } = require('glob');
-const log = require('cedar')();
+const fs = require('node:fs');
+const path = require('node:path');
 const mustache = require('mustache');
 const helpers = require('./helpers');
 
@@ -11,58 +9,59 @@ const directories = {
   configs: 'configs',
 };
 
-function outputHtml(file, data) {
+async function outputHtml(file, data) {
   const basename = path.basename(file, '.html');
   let d = data;
-  d = d.replace('<style></style>', `<style>${helpers.css(d)}</style>`);
-  d = helpers.minifyHtml(d);
-  fs.writeFile(file, d, (err2) => {
-    if (err2) log.error(err2);
-
-    log.info(basename);
-  });
+  d = d.replace('<style></style>', `<style>${helpers.css()}</style>`);
+  d = await helpers.minifyHtml(d);
+  fs.writeFileSync(file, d);
+  console.info(basename);
 }
 
-function renderTemplate(file, config) {
+async function renderConfig(file) {
   const basename = path.basename(file, '.json');
-  const template = path.join(directories.templates, `${config.template}.html`);
+  const config = JSON.parse(fs.readFileSync(file, 'utf8'));
   const out = path.join(directories.output, `${basename}.html`);
 
+  config.images = {
+    limenetch: await helpers.image(
+      'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'
+    ),
+  };
+
+  if ('gravatar' in config) {
+    config.gravatar = await helpers.image(
+      `https://www.gravatar.com/avatar/${config.gravatar}?rating=G&size=256`
+    );
+  }
+
+  const template = path.join(directories.templates, `${config.template}.html`);
   const data = mustache.render(fs.readFileSync(template, 'utf8'), config);
-  outputHtml(out, data);
+  await outputHtml(out, data);
 }
 
-function parseConfig(file) {
-  fs.readJson(file, (err1, c) => {
-    if (err1) log.error(err1);
-    const images = {
-      limenetch: helpers.image(
-        'https://s3.amazonaws.com/limenet-logo-img/v2/full-transparent-height20.png'
-      ),
-    };
+async function main() {
+  const files = fs
+    .readdirSync(directories.configs)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => path.join(directories.configs, f));
 
-    const config = c;
-    config.images = images;
+  await Promise.all(files.map((file) => renderConfig(file)));
 
-    if ('gravatar' in c) {
-      config.gravatar = helpers.image(
-        `https://www.gravatar.com/avatar/${c.gravatar}?rating=G&size=256`
-      );
-    }
+  fs.cpSync(
+    path.join(__dirname, '..', '_redirects'),
+    path.join(directories.output, '_redirects')
+  );
+}
 
-    renderTemplate(file, c);
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
   });
 }
-
-const files = globSync(path.join(directories.configs, '*.json'));
-Object.values(files).forEach((file) => {
-  parseConfig(file);
-});
-fs.copySync(
-  path.join(__dirname, '..', '_redirects'),
-  path.join(directories.output, '_redirects')
-);
 
 module.exports = {
   directories,
+  main,
 };

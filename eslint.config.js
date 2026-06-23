@@ -5,7 +5,7 @@ module.exports = [
   js.configs.recommended,
   {
     languageOptions: {
-      ecmaVersion: 2017,
+      ecmaVersion: 2024,
       sourceType: 'commonjs',
       globals: {
         ...globals.node,
@@ -14,14 +14,6 @@ module.exports = [
     rules: {
       'no-console': 'off',
       'linebreak-style': 'off',
-    },
-  },
-  {
-    files: ['test/**/*.js'],
-    languageOptions: {
-      globals: {
-        ...globals.mocha,
-      },
     },
   },
 ];
